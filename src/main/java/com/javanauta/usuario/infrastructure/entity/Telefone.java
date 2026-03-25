@@ -1,13 +1,16 @@
 package com.javanauta.usuario.infrastructure.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "Telefone")
+@Builder
+
 public class Telefone {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

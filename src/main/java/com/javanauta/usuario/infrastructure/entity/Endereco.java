@@ -1,12 +1,15 @@
 package com.javanauta.usuario.infrastructure.entity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "Endereco")
+@Builder
+
 public class Endereco {
 
     @Id
