@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -40,6 +41,13 @@ public class UsuarioController {
     public ResponseEntity<Void> deletaUsuarioPorEmail(@PathVariable String email){
         usuarioService.deleteUsuarioPorEmail(email);
         return ResponseEntity.ok().build();
+
+    }
+    @PutMapping
+    public ResponseEntity<UsuarioDTO> atualizaDadosUsuario(@RequestBody UsuarioDTO dto,
+                                                           @RequestHeader("Authorization") String token){
+
+        return ResponseEntity.ok(usuarioService.atualizaDadosdeUsuario(token,dto));
 
     }
 }
