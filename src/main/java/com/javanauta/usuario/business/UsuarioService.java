@@ -9,6 +9,7 @@ import com.javanauta.usuario.infrastructure.entity.Telefone;
 import com.javanauta.usuario.infrastructure.entity.Usuario;
 import com.javanauta.usuario.infrastructure.exceptions.ConflictException;
 import com.javanauta.usuario.infrastructure.exceptions.ResourceNotFoundException;
+import com.javanauta.usuario.infrastructure.exceptions.ConflictException;
 import com.javanauta.usuario.infrastructure.repository.EnderecoRepository;
 import com.javanauta.usuario.infrastructure.repository.TelefoneRepository;
 import com.javanauta.usuario.infrastructure.repository.UsuarioRepository;
@@ -39,15 +40,15 @@ public class UsuarioService {
         usuarioDTO.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
         Usuario usuario = usuarioConverter.paraUsuario(usuarioDTO);
 
-        Usuario salvo = usuarioRepository.save(usuario);
-        log.info("Usuário salvo com sucesso. ID: {}", salvo.getId());
-        return usuarioConverter.paraUsuarioDTO(salvo);
-    }
+    public void emailExiste(String email) {
+        try {
+            boolean existe = verificaEmail(email);
+            if (existe) {
+                throw new ConflictException("email ja cadastrado" + email);
+            }
 
-    private void validarEmailUnico(String email) {
-        if (usuarioRepository.existsByEmail(email)) {
-            log.warn("Tentativa de cadastro com email existente: {}", email);
-            throw new ConflictException("Email já cadastrado: " + email);
+        } catch (ConflictException e) {
+            throw new ConflictException("Email ja cadastrado" + e.getCause());
         }
     }
 
