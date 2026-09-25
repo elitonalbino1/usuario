@@ -36,6 +36,7 @@ public class GlobalExceptionHandler {
         return buildError(message, status, null);
     }
 
+    // ✅ Recurso não encontrado
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleNotFound(
             ResourceNotFoundException ex, HttpServletRequest request) {
@@ -44,6 +45,7 @@ public class GlobalExceptionHandler {
                 .body(buildError(ex.getMessage(), HttpStatus.NOT_FOUND, request.getRequestURI()));
     }
 
+    // ✅ Email duplicado / conflito de dados
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<Map<String, Object>> handleConflict(
             ConflictException ex, HttpServletRequest request) {
@@ -52,18 +54,11 @@ public class GlobalExceptionHandler {
                 .body(buildError(ex.getMessage(), HttpStatus.CONFLICT, request.getRequestURI()));
     }
 
-    @ExceptionHandler({UsernameNotFoundException.class, BadCredentialsException.class})
-    public ResponseEntity<Map<String, Object>> handleUnauthorized(
-            Exception ex, HttpServletRequest request) {
-        log.warn("Tentativa de login inválida");
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(buildError("Credenciais inválidas", HttpStatus.UNAUTHORIZED, request.getRequestURI()));
-    }
-
+    // ✅ Violação de integridade do banco (email duplicado que passou da validação)
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, Object>> handleDataIntegrity(
             DataIntegrityViolationException ex, HttpServletRequest request) {
-        log.error("Violação de integridade: {}", ex.getMessage());
+        log.error("Violação de integridade do banco: {}", ex.getMessage());
         String mensagem = "Erro ao processar dados";
         if (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("email")) {
             mensagem = "Este email já está cadastrado";
@@ -72,6 +67,16 @@ public class GlobalExceptionHandler {
                 .body(buildError(mensagem, HttpStatus.CONFLICT, request.getRequestURI()));
     }
 
+    // ✅ Login inválido
+    @ExceptionHandler({UsernameNotFoundException.class, BadCredentialsException.class})
+    public ResponseEntity<Map<String, Object>> handleUnauthorized(
+            Exception ex, HttpServletRequest request) {
+        log.warn("Tentativa de login inválida");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(buildError("Credenciais inválidas", HttpStatus.UNAUTHORIZED, request.getRequestURI()));
+    }
+
+    // ✅ Validação com múltiplos erros
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidation(
             MethodArgumentNotValidException ex, HttpServletRequest request) {
@@ -93,12 +98,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
+    // ✅ Erro genérico (último recurso)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneric(
             Exception ex, HttpServletRequest request) {
         log.error("Erro não tratado: {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(buildError("Erro inesperado: " + ex.getMessage(),
-                        HttpStatus.INTERNAL_SERVER_ERROR, request.getRequestURI()));
+                .body(buildError("Erro inesperado: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, request.getRequestURI()));
     }
 }
