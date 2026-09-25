@@ -8,7 +8,7 @@ import com.javanauta.usuario.infrastructure.entity.Endereco;
 import com.javanauta.usuario.infrastructure.entity.Telefone;
 import com.javanauta.usuario.infrastructure.entity.Usuario;
 import com.javanauta.usuario.infrastructure.exceptions.ResourceNotFoundException;
-import com.javanauta.usuario.infrastructure.exceptions.conflictException;
+import com.javanauta.usuario.infrastructure.exceptions.ConflictException;
 import com.javanauta.usuario.infrastructure.repository.EnderecoRepository;
 import com.javanauta.usuario.infrastructure.repository.TelefoneRepository;
 import com.javanauta.usuario.infrastructure.repository.UsuarioRepository;
@@ -40,11 +40,11 @@ public class UsuarioService {
         try {
             boolean existe = verificaEmail(email);
             if (existe) {
-                throw new conflictException("email ja cadastrado" + email);
+                throw new ConflictException("email ja cadastrado" + email);
             }
 
-        } catch (conflictException e) {
-            throw new conflictException("Email ja cadastrado" + e.getCause());
+        } catch (ConflictException e) {
+            throw new ConflictException("Email ja cadastrado" + e.getCause());
         }
     }
 
