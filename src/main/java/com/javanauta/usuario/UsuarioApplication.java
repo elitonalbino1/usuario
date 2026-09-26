@@ -2,10 +2,10 @@ package com.javanauta.usuario;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
-@FeignClient
+@EnableFeignClients(basePackages = "com.javanauta.usuario.infrastructure.clients")
 public class UsuarioApplication {
 
 	public static void main(String[] args) {

@@ -31,8 +31,21 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
+                        // libera Swagger e OpenAPI
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-resources/**",
+                                "/webjars/**"
+                        ).permitAll()
+                        // libera login
                         .requestMatchers(HttpMethod.POST, "/usuario/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/usuario").permitAll()
+                        // libera cadastro de usuário
+                        .requestMatchers(HttpMethod.POST, "/usuario/**").permitAll()
+                        // libera consulta de CEP
+                        .requestMatchers(HttpMethod.GET, "/usuario/endereco/**").permitAll()
+                        // demais rotas exigem autenticação
+                        .requestMatchers("/usuario/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
