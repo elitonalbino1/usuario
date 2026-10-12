@@ -30,26 +30,31 @@ public class SecurityConfig {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .authorizeHttpRequests(authorize -> authorize
-                        // libera Swagger e OpenAPI
+                        // 1. Libera Swagger e documentação OpenAPI
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
+                                "/swagger-ui.html",
                                 "/swagger-resources/**",
                                 "/webjars/**"
                         ).permitAll()
-                        // libera login
+
+                        // 2. OBRIGATÓRIO: Libera a rota de erros do Spring
+                        .requestMatchers("/error", "/error/**").permitAll() // 👈 ADICIONE ESTA LINHA!
+
+                        // 3. Libera Login e Cadastro de Usuário
                         .requestMatchers(HttpMethod.POST, "/usuario/login").permitAll()
-                        // libera cadastro de usuário
-                        .requestMatchers(HttpMethod.POST, "/usuario/**").permitAll()
-                        // libera consulta de CEP
+                        .requestMatchers(HttpMethod.POST, "/usuario").permitAll()
+
+                        // 4. Libera consulta de CEP
                         .requestMatchers(HttpMethod.GET, "/usuario/endereco/**").permitAll()
-                        // demais rotas exigem autenticação
-                        .requestMatchers("/usuario/**").authenticated()
+
+                        // 5. Qualquer outra requisição exige autenticação
                         .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
