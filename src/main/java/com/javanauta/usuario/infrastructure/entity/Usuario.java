@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
@@ -15,7 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Usuario implements UserDetails {
+public class Usuario implements UserDetails, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,9 +41,10 @@ public class Usuario implements UserDetails {
     @JoinColumn(name = "usuario_id", referencedColumnName = "id")
     private List<Telefone> telefones;
 
+    // Implementação da interface UserDetails para integração com Spring Security
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(); // Sem roles por enquanto
     }
 
     @Override
@@ -55,22 +59,21 @@ public class Usuario implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return true; // Conta nunca expira
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return true; // Conta nunca é bloqueada
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return true; // Credenciais nunca expiram
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return true; // Usuário sempre habilitado
     }
 }
-

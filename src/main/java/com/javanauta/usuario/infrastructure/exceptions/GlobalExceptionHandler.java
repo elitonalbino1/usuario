@@ -32,10 +32,6 @@ public class GlobalExceptionHandler {
         return error;
     }
 
-    private Map<String, Object> buildError(String message, HttpStatus status) {
-        return buildError(message, status, null);
-    }
-
     // ✅ Recurso não encontrado
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleNotFound(
@@ -45,7 +41,7 @@ public class GlobalExceptionHandler {
                 .body(buildError(ex.getMessage(), HttpStatus.NOT_FOUND, request.getRequestURI()));
     }
 
-    // ✅ Email duplicado / conflito de dados
+    // ✅ Conflito de dados
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<Map<String, Object>> handleConflict(
             ConflictException ex, HttpServletRequest request) {
@@ -54,7 +50,7 @@ public class GlobalExceptionHandler {
                 .body(buildError(ex.getMessage(), HttpStatus.CONFLICT, request.getRequestURI()));
     }
 
-    // ✅ Violação de integridade do banco (email duplicado que passou da validação)
+    // ✅ Violação de integridade do banco
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, Object>> handleDataIntegrity(
             DataIntegrityViolationException ex, HttpServletRequest request) {
@@ -98,16 +94,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
-    // ✅ Erro genérico (último recurso)
+    // ✅ Argumento inválido
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, Object>> handleIllegalArgument(
+            IllegalArgumentException ex, HttpServletRequest request) {
+        log.warn("Argumento inválido: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(buildError(ex.getMessage(), HttpStatus.BAD_REQUEST, request.getRequestURI()));
+    }
+
+    // ✅ Erro genérico
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneric(
             Exception ex, HttpServletRequest request) {
         log.error("Erro não tratado: {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(buildError("Erro inesperado: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, request.getRequestURI()));
-    }
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex){
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+                .body(buildError("Erro inesperado: " + ex.getMessage(),
+                        HttpStatus.INTERNAL_SERVER_ERROR, request.getRequestURI()));
     }
 }
