@@ -1,33 +1,45 @@
 package com.javanauta.usuario.infrastructure.entity;
+
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+import java.io.Serial;
+
+@Entity
+@Table(name = "endereco")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "Endereco")
+@AllArgsConstructor
 @Builder
+public class Endereco implements Serializable {
 
-public class Endereco {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "rua")
+
+    @Column(name = "rua", length = 150, nullable = false)
     private String rua;
-    @Column(name = "numero")
+
+    @Column(name = "numero", nullable = false)
     private Long numero;
-    @Column(name  = "complemento", length = 50)
+
+    @Column(name = "complemento", length = 50)
     private String complemento;
-    @Column(name = "cidade", length = 150)
+
+    @Column(name = "cidade", length = 150, nullable = false)
     private String cidade;
-    @Column(name = "estado", length = 2)
+
+    @Column(name = "estado", length = 2, nullable = false)
     private String estado;
-    @Column(name = "cep", length = 9)
+
+    @Column(name = "cep", length = 9, nullable = false)
     private String cep;
+
     @Column(name = "usuario_id")
     private Long usuarioId;
-
 }

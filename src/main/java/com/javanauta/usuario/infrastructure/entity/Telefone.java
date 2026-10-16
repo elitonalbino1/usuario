@@ -3,6 +3,9 @@ package com.javanauta.usuario.infrastructure.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+import java.io.Serial;
+
 @Entity
 @Table(name = "telefone")
 @Getter
@@ -10,7 +13,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Telefone {
+public class Telefone implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

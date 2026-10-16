@@ -2,6 +2,7 @@ package com.javanauta.usuario.infrastructure.clients;
 
 import lombok.*;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Getter
@@ -11,6 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ViaCepDTO implements Serializable {
 
+        @Serial
         private static final long serialVersionUID = 1L;
 
         private String cep;

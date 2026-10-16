@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
 @Builder
 public class Usuario implements UserDetails, Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
